@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>FaceID Care — Prototype</title>
+    <style>
+        :root {
+            --navy: #142b4a;
+            --blue: #2563eb;
+            --teal: #0f9f91;
+            --bg: #f3f6fb;
+            --ink: #17243a;
+            --muted: #64748b;
+            --line: #e2e8f0
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 14px/1.5 Inter, Segoe UI, Arial, sans-serif
+        }
+
+        header {
+            background: linear-gradient(110deg, #122b4c, #1d4774);
+            color: white;
+            padding: 18px 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .brand {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: #ffffff1c;
+            display: grid;
+            place-items: center;
+            font-size: 22px
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            margin: 0
+        }
+
+        .brand p {
+            margin: 2px 0 0;
+            color: #c7d7e9;
+            font-size: 12px
+        }
+
+        .pill,
+        .tag {
+            border-radius: 99px;
+            padding: 5px 9px;
+            font-size: 10px;
+            background: #e8edf5;
+            color: #536174
+        }
+
+        .pill {
+            border: 1px solid #ffffff45;
+            background: transparent;
+            color: #dbeafe
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 215px 1fr;
+            min-height: calc(100vh - 78px)
+        }
+
+        aside {
+            background: white;
+            border-right: 1px solid var(--line);
+            padding: 20px 13px
+        }
+
+        .navlabel {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            padding: 8px 12px
+        }
+
+        .nav {
+            padding: 11px 12px;
+            border-radius: 9px;
+            color: #526176;
+            margin: 3px 0
+        }
+
+        .nav.active {
+            background: #eaf1ff;
+            color: #1d4ed8;
+            font-weight: 650
+        }
+
+        main {
+            padding: 25px;
+            max-width: 1500px;
+            width: 100%;
+            margin: auto
+        }
+
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px
+        }
+
+        .heading h2 {
+            font-size: 22px;
+            margin: 0 0 4px
+        }
+
+        .heading p {
+            margin: 0;
+            color: var(--muted)
+        }
+
+        .demo {
+            font-size: 11px;
+            background: #fff7e6;
+            color: #925c00;
+            border: 1px solid #f5d89b;
+            border-radius: 8px;
+            padding: 8px 11px;
+            max-width: 310px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(300px, .9fr);
+            gap: 18px
+        }
+
+        .stack {
+            display: grid;
+            gap: 18px
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 3px 12px #19365b08;
+            overflow: hidden
+        }
+
+        .panelhead {
+            padding: 15px 18px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .panelhead h3 {
+            font-size: 14px;
+            margin: 0
+        }
+
+        .panelbody {
+            padding: 17px
+        }
+
+        .camera {
+            background: #0b1728;
+            border-radius: 11px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16/10;
+            display: grid;
+            place-items: center;
+            color: #b6c6d8
+        }
+
+        .camera video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            transform: scaleX(-1)
+        }
+
+        .cam-placeholder {
+            text-align: center;
+            padding: 24px
+        }
+
+        .camicon {
+            font-size: 42px;
+            display: block
+        }
+
+        .scanframe {
+            position: absolute;
+            inset: 13% 25%;
+            border: 2px solid #37d6be;
+            border-radius: 45%;
+            box-shadow: 0 0 0 999px #06142625;
+            pointer-events: none;
+            display: none
+        }
+
+        .liveflag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #b91c1c;
+            color: white;
+            border-radius: 99px;
+            padding: 4px 9px;
+            font-size: 10px;
+            display: none
+        }
+
+        .controls {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 13px
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 650;
+            cursor: pointer;
+            font-size: 12px
+        }
+
+        .primary {
+            background: var(--blue);
+            color: white
+        }
+
+        .dark {
+            background: #e9eef5;
+            color: #334155
+        }
+
+        .success {
+            background: #e3f7f2;
+            color: #087e70
+        }
+
+        .danger {
+            background: #fff0ef;
+            color: #b42318
+        }
+
+        .btn:disabled {
+            opacity: .45;
+            cursor: not-allowed
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 11px
+        }
+
+        .statusbox {
+            margin-top: 15px;
+            border-radius: 10px;
+            padding: 13px;
+            background: #f8fafc;
+            border: 1px solid var(--line)
+        }
+
+        .statusrow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px
+        }
+
+        .score {
+            font-size: 25px;
+            font-weight: 750;
+            margin-top: 5px
+        }
+
+        .tag.good {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .tag.bad {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        .notice {
+            padding: 10px 12px;
+            border-radius: 9px;
+            margin-top: 13px;
+            font-size: 11px;
+            background: #fff7e6;
+            color: #875b0b;
+            border: 1px solid #f5dfb3
+        }
+
+        .notice.good {
+            background: #e9f9f3;
+            color: #087e70;
+            border-color: #c5eee0
+        }
+
+        .notice.bad {
+            background: #fff0ef;
+            color: #a52d29;
+            border-color: #ffd5d2
+        }
+
+        .patient {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #e7efff;
+            color: #2456a6;
+            display: grid;
+            place-items: center;
+            font-weight: 800
+        }
+
+        .patient h4 {
+            margin: 0;
+            font-size: 14px
+        }
+
+        .patient p {
+            margin: 2px 0;
+            color: var(--muted);
+            font-size: 11px
+        }
+
+        .detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 17px
+        }
+
+        .field,
+        .setting {
+            background: #f8fafc;
+            border: 1px solid #edf1f6;
+            border-radius: 8px;
+            padding: 9px
+        }
+
+        .field small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px
+        }
+
+        .field b {
+            font-size: 12px
+        }
+
+        .settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+
+        .setting label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .setting input,
+        .privacy input {
+            accent-color: var(--blue)
+        }
+
+        .setting p {
+            font-size: 10px;
+            color: var(--muted);
+            margin: 5px 0 0
+        }
+
+        select {
+            border: 1px solid #d8e0eb;
+            border-radius: 7px;
+            padding: 9px;
+            background: white;
+            font-size: 12px
+        }
+
+        .roleline {
+            display: flex;
+            gap: 9px;
+            align-items: center
+        }
+
+        .access {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 8px
+        }
+
+        .audit {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px
+        }
+
+        .audit th {
+            text-align: left;
+            color: #7b8798;
+            background: #f8fafc
+        }
+
+        .audit td,
+        .audit th {
+            padding: 9px 7px;
+            border-bottom: 1px solid #edf1f5
+        }
+
+        .ok {
+            color: #0b8b70
+        }
+
+        .fail {
+            color: #c2413b
+        }
+
+        .privacy {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start
+        }
+
+        .privacy p {
+            margin: 0;
+            font-size: 11px;
+            color: #536174
+        }
+
+        .footer {
+            text-align: center;
+            color: #8a97a8;
+            font-size: 10px;
+            padding: 18px
+        }
+
+        @media(max-width:900px) {
+            .layout {
+                grid-template-columns: 1fr
+            }
+
+            aside {
+                display: none
+            }
+
+            main {
+                padding: 16px
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .heading {
+                flex-direction: column
+            }
+        }
+
+        @media(max-width:480px) {
+
+            .settings,
+            .detail {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="brand">
+            <div class="logo">✚</div>
+            <div>
+                <h1>FaceID Care</h1>
+                <p>Prototype Identifikasi Pasien Berbasis Wajah</p>
+            </div>
+        </div><span class="pill" id="clock">LINGKUNGAN SIMULASI</span>
+    </header>
+    <div class="layout">
+        <aside>
+            <div class="navlabel">MENU UTAMA</div>
+            <div class="nav active">▣ &nbsp; Verifikasi pasien</div>
+            <div class="nav">▤ &nbsp; Data pasien (demo)</div>
+            <div class="nav">◷ &nbsp; Riwayat & audit trail</div>
+            <div class="nav">♙ &nbsp; Hak akses pengguna</div>
+            <div class="navlabel" style="margin-top:20px">KEAMANAN</div>
+            <div class="nav">♢ &nbsp; Privasi & persetujuan</div>
+        </aside>
+        <main>
+            <div class="heading">
+                <div>
+                    <h2>Verifikasi identitas pasien</h2>
+                    <p>Ambil citra wajah melalui kamera, lalu jalankan simulasi pencocokan identitas.</p>
+                </div>
+                <div class="demo"><b>Catatan prototype:</b> kamera berjalan langsung. Pencocokan wajah, deep learning,
+                    dan koneksi EHR masih disimulasikan—bukan autentikasi biometrik klinis.</div>
+            </div>
+            <div class="grid">
+                <div class="stack">
+                    <section class="panel">
+                        <div class="panelhead">
+                            <h3>01 · Pemindaian wajah</h3><span class="tag" id="cameraState">Kamera belum aktif</span>
+                        </div>
+                        <div class="panelbody">
+                            <div class="camera"><video id="video" autoplay playsinline muted></video>
+                                <div class="cam-placeholder" id="placeholder"><span class="camicon">▣</span><b>Kamera
+                                        belum diaktifkan</b>
+                                    <div class="muted" style="color:#9fb0c4">Izinkan akses kamera pada browser untuk
+                                        memulai</div>
+                                </div>
+                                <div class="scanframe" id="scanframe"></div>
+                                <div class="liveflag" id="liveflag">● LIVE</div>
+                            </div>
+                            <div class="controls"><button class="btn primary" id="startBtn">Aktifkan
+                                    kamera</button><button class="btn dark" id="captureBtn" disabled>Ambil
+                                    citra</button><button class="btn dark" id="stopBtn" disabled>Matikan kamera</button>
+                            </div>
+                            <div class="muted" style="margin-top:9px">Gunakan kamera perangkat. Browser perlu izin
+                                kamera; akses umumnya memerlukan HTTPS atau localhost.</div>
+                            <div class="statusbox">
+                                <div class="statusrow"><strong id="authTitle">Menunggu pemindaian</strong><span
+                                        class="tag" id="authTag">BELUM DIPROSES</span></div>
+                                <div class="score" id="score">—</div>
+                                <div class="muted" id="scoreCaption">Skor kemiripan akan muncul setelah simulasi
+                                    pencocokan.</div>
+                                <div class="controls"><button class="btn success" id="matchBtn" disabled>Simulasikan
+                                        pencocokan</button><button class="btn danger" id="mismatchBtn"
+                                        disabled>Simulasikan ketidaksesuaian</button></div>
+                            </div>
+                            <div id="alert" class="notice">Belum ada hasil autentikasi. Tetap ikuti prosedur
+                                identifikasi pasien yang berlaku.</div>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <div class="panelhead">
+                            <h3>05 · Kondisi pelayanan</h3><span class="tag">Uji skenario</span>
+                        </div>
+                        <div class="panelbody">
+                            <div class="settings">
+                                <div class="setting"><label>Masker <input type="checkbox" id="mask"></label>
+                                    <p>Simulasi penggunaan masker</p>
+                                </div>
+                                <div class="setting"><label>Pencahayaan rendah <input type="checkbox"
+                                            id="lowlight"></label>
+                                    <p>Simulasi kondisi redup</p>
+                                </div>
+                                <div class="setting"><label>Mata tertutup <input type="checkbox" id="eyes"></label>
+                                    <p>Simulasi mata tertutup</p>
+                                </div>
+                                <div class="setting"><label>Posisi berbaring <input type="checkbox" id="lying"></label>
+                                    <p>Simulasi perubahan posisi</p>
+                                </div>
+                            </div>
+                            <div class="muted" style="margin-top:10px">Pengaturan ini hanya mengubah hasil simulasi;
+                                tidak memodifikasi citra kamera atau menguji akurasi algoritma.</div>
+                        </div>
+                    </section>
+                </div>
+                <div class="stack">
+                    <section class="panel">
+                        <div class="panelhead">
+                            <h3>02–03 · Hasil pencocokan & EHR</h3><span class="tag" id="ehrTag">BELUM TERHUBUNG</span>
+                        </div>
+                        <div class="panelbody">
+                            <div class="patient">
+                                <div class="avatar">RM</div>
+                                <div>
+                                    <h4 id="patientName">Belum ada pasien terverifikasi</h4>
+                                    <p id="patientMeta">Data EHR demo akan ditampilkan di sini</p>
+                                </div>
+                            </div>
+                            <div class="detail">
+                                <div class="field"><small>Nomor rekam medis</small><b id="mrn">—</b></div>
+                                <div class="field"><small>Tanggal lahir</small><b id="dob">—</b></div>
+                                <div class="field"><small>Unit perawatan</small><b id="ward">—</b></div>
+                                <div class="field"><small>Status EHR</small><b id="ehrStatus">Menunggu</b></div>
+                            </div>
+                            <div class="notice">EHR menggunakan data pasien fiktif. Tidak ada koneksi ke sistem rumah
+                                sakit atau rekam medis nyata.</div>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <div class="panelhead">
+                            <h3>06 · Hak akses pengguna</h3><span class="tag">Role-based access</span>
+                        </div>
+                        <div class="panelbody">
+                            <div class="roleline"><label style="font-size:11px;font-weight:650">Masuk
+                                    sebagai</label><select id="role">
+                                    <option>Perawat</option>
+                                    <option>Dokter</option>
+                                    <option>Administrasi</option>
+                                </select></div>
+                            <div class="access" id="accessText">Perawat: akses identitas dan ringkasan informasi yang
+                                diperlukan untuk pelayanan.</div>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <div class="panelhead">
+                            <h3>07 · Audit trail & riwayat</h3><span class="tag">Sesi ini</span>
+                        </div>
+                        <div class="panelbody" style="padding:8px 13px">
+                            <table class="audit">
+                                <thead>
+                                    <tr>
+                                        <th>Waktu</th>
+                                        <th>Pengguna</th>
+                                        <th>Aktivitas</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="auditBody">
+                                    <tr>
+                                        <td colspan="4" class="muted">Belum ada aktivitas.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <div class="panelhead">
+                            <h3>08 · Privasi & persetujuan</h3><span class="tag">Kontrol demo</span>
+                        </div>
+                        <div class="panelbody">
+                            <div class="privacy"><input type="checkbox" id="consent">
+                                <p><b>Persetujuan penggunaan data biometrik (simulasi)</b><br>Persetujuan harus
+                                    diperoleh dan dicatat sesuai kebijakan serta ketentuan yang berlaku sebelum data
+                                    biometrik diproses.</p>
+                            </div>
+                            <div class="muted" style="margin-top:10px">Prototype tidak menyimpan citra wajah atau
+                                templat biometrik. Enkripsi, manajemen kunci, dan kontrol akses produksi belum
+                                diimplementasikan.</div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="footer">FACEID CARE · PROTOTYPE AKADEMIK · BUKAN UNTUK PENGAMBILAN KEPUTUSAN KLINIS</div>
+        </main>
+    </div>
+    <script>
+        const $ = id => document.getElementById(id); let stream = null, captured = false; const patient = { name: 'Pasien Demo A', meta: 'Perempuan · 34 tahun · Data fiktif', mrn: 'DEMO-000184', dob: '12 Mei 1992', ward: 'Rawat Inap Anak (simulasi)' }; function now() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) } function log(action, status) { let b = $('auditBody'); if (b.querySelector('[colspan]')) b.innerHTML = ''; let tr = document.createElement('tr');[now(), $('role').value, action, status].forEach((v, i) => { let td = document.createElement('td'); td.textContent = v; if (i === 3) td.className = status === 'Berhasil' ? 'ok' : 'fail'; tr.append(td) }); b.prepend(tr) } function reset() { captured = false; $('score').textContent = '—'; $('scoreCaption').textContent = 'Skor kemiripan akan muncul setelah simulasi pencocokan.'; $('authTitle').textContent = 'Menunggu pemindaian'; $('authTag').textContent = 'BELUM DIPROSES'; $('authTag').className = 'tag'; $('patientName').textContent = 'Belum ada pasien terverifikasi'; $('patientMeta').textContent = 'Data EHR demo akan ditampilkan di sini';['mrn', 'dob', 'ward'].forEach(x => $(x).textContent = '—'); $('ehrStatus').textContent = 'Menunggu'; $('ehrTag').textContent = 'BELUM TERHUBUNG'; $('alert').className = 'notice'; $('alert').textContent = 'Belum ada hasil autentikasi. Tetap ikuti prosedur identifikasi pasien yang berlaku.' } $('startBtn').onclick = async () => { try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false }); $('video').srcObject = stream; $('video').style.display = 'block'; $('placeholder').style.display = 'none'; $('scanframe').style.display = 'block'; $('liveflag').style.display = 'block'; $('cameraState').textContent = 'Kamera aktif'; $('cameraState').className = 'tag good'; $('startBtn').disabled = true; $('captureBtn').disabled = false; $('stopBtn').disabled = false; log('Kamera diaktifkan', 'Berhasil') } catch (e) { $('alert').className = 'notice bad'; $('alert').textContent = 'Kamera tidak dapat diakses: ' + (e.name === 'NotAllowedError' ? 'izin kamera ditolak. Aktifkan izin kamera pada browser.' : e.message) + ' Pastikan halaman melalui HTTPS atau localhost.'; log('Akses kamera gagal', 'Gagal') } }; $('stopBtn').onclick = () => { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; $('video').srcObject = null; $('video').style.display = 'none'; $('placeholder').style.display = 'block'; $('scanframe').style.display = 'none'; $('liveflag').style.display = 'none'; $('cameraState').textContent = 'Kamera dimatikan'; $('cameraState').className = 'tag'; $('startBtn').disabled = false; $('captureBtn').disabled = true; $('stopBtn').disabled = true; $('matchBtn').disabled = true; $('mismatchBtn').disabled = true; reset(); log('Kamera dimatikan', 'Berhasil') }; $('captureBtn').onclick = () => { captured = true; $('matchBtn').disabled = false; $('mismatchBtn').disabled = false; $('authTitle').textContent = 'Citra wajah diambil'; $('authTag').textContent = 'SIAP DIVERIFIKASI'; $('alert').textContent = 'Citra hanya ditampilkan dari kamera dan tidak disimpan. Pilih simulasi pencocokan.'; log('Pengambilan citra wajah', 'Berhasil') }; function match(ok) { if (!captured) return; if (!$('consent').checked) { $('alert').className = 'notice bad'; $('alert').textContent = 'Persetujuan belum dicentang. Dalam sistem nyata, pemrosesan biometrik harus mengikuti mekanisme persetujuan yang sah.'; log('Verifikasi diblokir: persetujuan', 'Gagal'); return } let s = ok ? 99.2 : 61.4; if ($('mask').checked) s -= ok ? 8.9 : 4; if ($('lowlight').checked) s -= ok ? 4.2 : 2; if ($('eyes').checked) s -= ok ? 11 : 3; if ($('lying').checked) s -= ok ? 2.5 : 1; s = Math.max(35, Math.min(99.7, s)); let pass = ok && s >= 85; $('score').textContent = s.toFixed(1) + '%'; $('scoreCaption').textContent = 'Skor kemiripan simulasi · ambang contoh 85%'; $('authTitle').textContent = pass ? 'Autentikasi simulasi berhasil' : 'Identitas belum dapat dipastikan'; $('authTag').textContent = pass ? 'COCOK' : 'TIDAK COCOK'; $('authTag').className = 'tag ' + (pass ? 'good' : 'bad'); if (pass) { $('patientName').textContent = patient.name; $('patientMeta').textContent = patient.meta; $('mrn').textContent = patient.mrn; $('dob').textContent = patient.dob; $('ward').textContent = patient.ward; $('ehrStatus').textContent = 'Data demo ditampilkan'; $('ehrTag').textContent = 'EHR DEMO'; $('ehrTag').className = 'tag good'; $('alert').className = 'notice good'; $('alert').textContent = 'Hasil simulasi cocok. Dalam implementasi nyata, tetap konfirmasi identitas sesuai prosedur rumah sakit sebelum tindakan atau akses klinis.'; log('Pencocokan wajah + akses EHR demo', 'Berhasil') } else { $('patientName').textContent = 'Data pasien tidak ditampilkan'; $('patientMeta').textContent = 'Lakukan verifikasi alternatif';['mrn', 'dob', 'ward'].forEach(x => $(x).textContent = '—'); $('ehrStatus').textContent = 'Akses ditahan'; $('ehrTag').textContent = 'AKSES DITAHAN'; $('ehrTag').className = 'tag bad'; $('alert').className = 'notice bad'; $('alert').textContent = 'PERINGATAN: identitas tidak cocok atau skor di bawah ambang simulasi. Hentikan proses dan verifikasi ulang dengan prosedur alternatif serta dua identitas sesuai kebijakan fasilitas.'; log('Pencocokan gagal / peringatan', 'Gagal') } } $('matchBtn').onclick = () => match(true); $('mismatchBtn').onclick = () => match(false); $('role').onchange = () => { let r = $('role').value; $('accessText').textContent = r === 'Perawat' ? 'Perawat: akses identitas dan ringkasan informasi yang diperlukan untuk pelayanan.' : r === 'Dokter' ? 'Dokter: akses identitas dan informasi klinis sesuai kewenangan.' : 'Administrasi: akses data demografis dan administrasi; tidak untuk membuka informasi klinis.'; log('Perubahan peran pengguna', 'Berhasil') }; $('consent').onchange = () => log('Status persetujuan: ' + ($('consent').checked ? 'disetujui (simulasi)' : 'belum disetujui'), 'Berhasil'); $('clock').textContent = new Date().toLocaleString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    </script>
+</body>
+
+</html>
